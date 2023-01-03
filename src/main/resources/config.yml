@@ -1,0 +1,247 @@
+#     _________ .__                          ___________              __
+#     \_   ___ \|  |   _______  __ __________\__    ___/___ ___  ____/  |_
+#     /    \  \/|  | _/ __ \  \/ // __ \_  __ \|    |_/ __ \\  \/  /\   __\
+#     \     \___|  |_\  ___/\   /\  ___/|  | \/|    |\  ___/ >    <  |  |
+#     \______  /____/\___  >\_/  \___  >__|   |____| \___  >__/\_ \ |__|
+#     \/          \/          \/                  \/      \/
+#                  By ItsMCB and other CleverText contributors
+
+#     A message from Martin (ItsMCB), the lead developer:
+#     I truly hope this plugin fits your needs. If you come across a problem or have a suggestion, please open an issue on GitHub.
+#     Additionally, if you need help or more information, please check out the "README" on GitHub.
+#     GitHub: https://github.com/ItsMCB/CleverText
+
+# CleverText gives you full control over its features. Please read the comments (lines with # before them) to understand what each feature does and how to customize it.
+file-version: 1 # DO NOT EDIT THIS
+features:
+  # /clearchat is a command that will sendAs empty messages to clients in an effort to remove visibility of previously visibly messages
+  clearchat:
+    enabled: true
+    permission: "clevertext.admin"
+    empty-message-amount: 150
+  # The handler will take control of the chat. It must be enabled for most features to work.
+  handler:
+    enabled: true
+  # Processes text on the server
+  text-processors:
+    - ==: TextProcessor
+      id: American English If Inappropriate Entry Is In Word
+      scan-regex-pattern: (?i)\b(\w*)[ENTRY](\w*)\b
+      scan-mode: REGEX-WITH-ENTRIES
+      entries:
+        - "fuck"
+        - "damn"
+        - "bitch"
+        - "breast"
+        - "boob"
+        - "brothel"
+        - "shit"
+        - "clit"
+        - "clitoris"
+        - "condom"
+        - "cum"
+        - "coom"
+        - "cunt"
+        - "pussy"
+        - "vagina"
+        - "ejaculate"
+        - "erect"
+        - "stripper"
+        - "horny"
+        - "jizz"
+        - "kink"
+        - "molest"
+        - "sissy"
+        - "penis"
+        - "prostitute"
+        - "pubic"
+        - "queef"
+        - "rectum"
+        - "scrotum"
+        - "semen"
+        - "piss"
+        - "dick"
+        - "whore"
+        - "crap"
+        - "shit"
+        - "cunt"
+        - "arse"
+        - "vibrator"
+        - "urinate"
+        - "tramp"
+        - "titty"
+      modify-mode: REPLACE
+      replacement: '#'
+      logging:
+        enabled: true
+    - ==: TextProcessor
+      id: Offensive British English If Inappropriate Entry Is In Word
+      scan-regex-pattern: (?i)\b(\w*)[ENTRY](\w*)\b
+      scan-mode: REGEX-WITH-ENTRIES
+      entries:
+        - "minger"
+        - "wanker"
+        - "bell end"
+        - "quim"
+        - "shite"
+        - "twat"
+        - "chay"
+        - "dick head"
+        - "fanny"
+        - "slag"
+        - "bollocks"
+        - "arse"
+        - "bastard"
+        - "bugger"
+        - "knob head"
+      modify-mode: REPLACE
+      replacement: '#'
+      logging:
+        enabled: true
+    - ==: TextProcessor
+      id: If Inappropriate Entry Or Has Common Ending
+      scan-regex-pattern: (?i)\b[ENTRY]($|ing|ed|er|est|able|s)\b
+      scan-mode: REGEX-WITH-ENTRIES
+      entries:
+        - "tit"
+        - "bra"
+        - "ass"
+        - "nig"
+        - "nigg"
+        - "shag"
+        - "fap"
+        - "cock"
+        - "fuk"
+      modify-mode: REPLACE
+      replacement: '#'
+      logging:
+        enabled: true
+    - ==: TextProcessor
+      id: Inappropriate Sites and Server Advertising
+      scan-regex-pattern: (?i)\b(\w*)[ENTRY](\w*)\b
+      scan-mode: REGEX-WITH-ENTRIES
+      entries:
+        - "porn"
+        - "xvideos"
+        - "hypixel"
+        - "hypickel"
+        - "aternos"
+        - "minehut"
+        - "minefort"
+        - "apexmc"
+        - "mcprohosting"
+      modify-mode: BLOCK-SEND
+      logging:
+        enabled: true
+    - ==: TextProcessor
+      id: Inappropriate Multispace Words or Phrases
+      scan-regex-pattern: (?i)\b(\w*)[ENTRY](\w*)\b
+      scan-mode: REGEX-WITH-ENTRIES
+      entries:
+        - "bite me"
+        - "blow job"
+        - "up skirt"
+        - "ball sack"
+        - "beat meat"
+        - "ass wipe"
+        - "ass hole"
+        - "dumb fuck"
+        - "jerk off"
+        - "mother fucker"
+        - "strip club"
+        - "hand job"
+        - "love juice"
+        - "hole stuffer"
+        - "golden shower"
+        - "god damn"
+        - "cock block"
+        - "deep throat"
+        - "breast milk"
+      modify-mode: BLOCK-SEND
+      logging:
+        enabled: true
+    - ==: TextProcessor
+      id: Inappropriate Topics
+      scan-regex-pattern: (?i)\b(\w*)[ENTRY](\w*)\b
+      scan-mode: REGEX-WITH-ENTRIES
+      entries:
+        - "osama bin laden"
+        - "gonorrhea"
+        - "xxx"
+        - "sex"
+        - "bestiality"
+        - "playboy"
+        - "pornography"
+        - "porn"
+        - "porno"
+        - "hentai"
+        - "bdsm"
+        - "fetish"
+        - "hitler"
+        - "hooker"
+        - "masturbat"
+      modify-mode: BLOCK-SEND
+      logging:
+        enabled: true
+    - ==: TextProcessor
+      id: Website
+      scan-regex-pattern: http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+
+      scan-mode: REGEX
+      modify-mode: MAKE-HYPERLINK
+      logging:
+        enabled: true
+  # Player chat format based on permission and format priority (the highest number is chosen)
+  message-formats:
+    # All chat formats must start with "- ==: MessageFormat" for serialization. They must also have an id, priority, permission (can be "null"), color, and components.
+    - ==: MessageFormat
+      id: default
+      priority: 1
+      permission: null
+      color: "white"
+      components:
+        # All components must start with "- ==: BukkitMsgBuilder" and have "message-text"
+        # They may also have "hover-text"
+        # They may also have "click-event-action" and "click-event-value" if both values exist
+        - ==: BukkitMsgBuilder
+          message-text: "&e[playerName]"
+          hover-text: "&7&m        &7[ &fABOUT &7]&m        \n&f&3Username: &b[playerName]"
+          click-event-action: "SUGGEST_COMMAND"
+          click-event-value: "/msg [playerName] "
+        - ==: BukkitMsgBuilder
+          message-text: " &8&lᐅ "
+    - ==: MessageFormat
+      id: vip
+      priority: 100
+      permission: group.vip
+      color: "green"
+      components:
+        - ==: BukkitMsgBuilder
+          message-text: "%luckperms_prefix%"
+          hover-text: "&7&m        &7[ &fRANK &7]&m        \n&3VIP Player"
+          click-event-action: "OPEN_URL"
+          click-event-value: "https://store.southhollow.net/"
+        - ==: BukkitMsgBuilder
+          message-text: "&f[playerName]"
+          hover-text: "&7&m        &7[ &fABOUT &7]&m        \n&3Username: &b[playerName]"
+          click-event-action: "SUGGEST_COMMAND"
+          click-event-value: "/msg [playerName] "
+        - ==: BukkitMsgBuilder
+          message-text: " &8&lᐅ "
+    - ==: MessageFormat
+      id: staff
+      priority: 100
+      permission: group.staff
+      color: "aqua"
+      components:
+        - ==: BukkitMsgBuilder
+          message-text: "%luckperms_prefix%"
+          hover-text: "&7&m        &7[ &fRANK &7]&m        \n&3Staff Member"
+          click-event-action: "OPEN_URL"
+          click-event-value: "https://southhollow.net/staff/"
+        - ==: BukkitMsgBuilder
+          message-text: "&3[playerName]"
+          hover-text: "&7&m        &7[ &fABOUT &7]&m        \n&3Username: &b[playerName]"
+          click-event-action: "SUGGEST_COMMAND"
+          click-event-value: "/msg [playerName] "
+        - ==: BukkitMsgBuilder
+          message-text: " &8&lᐅ "

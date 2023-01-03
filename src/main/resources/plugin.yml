@@ -1,0 +1,11 @@
+name: CleverText
+version: '${version}'
+main: me.itsmcb.clevertext.CleverText
+api-version: 1.18
+authors: [ ItsMCB ]
+description: Aims to enhance the text experience with permission-based chat formatting, multiple filter options, and fun features.
+website: https://github.com/ItsMCB/CleverText
+softdepend:
+  - PlaceholderAPI
+depend:
+  - VexelCore
