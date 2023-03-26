@@ -24,8 +24,8 @@ public class MessageFormatManager {
 
     private ArrayList<MessageFormat> messageFormats = new ArrayList<>();
 
-    public int amountRegistered() {
-        return messageFormats.size();
+    public ArrayList<MessageFormat> getMessageFormats() {
+        return messageFormats;
     }
 
     public boolean register(@NotNull MessageFormat messageFormat) {
@@ -81,8 +81,7 @@ public class MessageFormatManager {
     }
 
     public String processInternalPlaceholders(String input, Player player) {
-       return input
-                .replaceAll("\\[playerName]",player.getName());
+       return input.replaceAll("\\[playerName]",player.getName());
     }
 
 }

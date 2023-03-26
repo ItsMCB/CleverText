@@ -32,8 +32,8 @@ public class TextProcessorManager {
         return textProcessors.add(textProcessor);
     }
 
-    public int amountRegistered() {
-        return textProcessors.size();
+    public ArrayList<TextProcessor> getTextProcessors() {
+        return textProcessors;
     }
 
     public TextProcessor getById(String id) {

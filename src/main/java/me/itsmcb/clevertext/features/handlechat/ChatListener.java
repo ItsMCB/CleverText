@@ -19,8 +19,10 @@ public class ChatListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncChatEvent event) {
         if (event.isCancelled()) { return; }
+
         // Remove all players from seeing default chat but still let the console see it
         ChatUtils.removePlayerAudience(event.viewers());
+
         // Send final result with message format manager
         String messageText = ((TextComponent) event.originalMessage()).content();
         instance.getMessageFormatManager().sendAs(event.getPlayer(), messageText);
