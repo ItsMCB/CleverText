@@ -192,56 +192,46 @@ features:
         enabled: true
   # Player chat format based on permission and format priority (the highest number is chosen)
   message-formats:
-    # All chat formats must start with "- ==: MessageFormat" for serialization. They must also have an id, priority, permission (can be "null"), color, and components.
     - ==: MessageFormat
       id: default
       priority: 1
       permission: null
-      color: "white"
+      color: white
       components:
-        # All components must start with "- ==: BukkitMsgBuilder" and have "message-text"
-        # They may also have "hover-text"
-        # They may also have "click-event-action" and "click-event-value" if both values exist
         - ==: BukkitMsgBuilder
-          message-text: "&e[playerName]"
-          hover-text: "&7&m        &7[ &fABOUT &7]&m        \n&f&3Username: &b[playerName]"
-          click-event-action: "SUGGEST_COMMAND"
-          click-event-value: "/msg [playerName] "
+          message-text: '&e[playerName]'
+          hover-text: "&8&m        &8[ &d&lABOUT &8]&m        \n&7Username: &d[playerName]\n&7Time Played: &d%statistic_time_played:days%d %statistic_time_played:hours%h %statistic_time_played:minutes%m\n\n&d➜&7 Click To Message"
+          click-event-action: SUGGEST_COMMAND
+          click-event-value: '/msg [playerName] '
         - ==: BukkitMsgBuilder
-          message-text: " &8&lᐅ "
+          message-text: ' &8&lᐅ '
     - ==: MessageFormat
       id: vip
-      priority: 100
+      priority: 50
       permission: group.vip
-      color: "green"
+      color: green
       components:
         - ==: BukkitMsgBuilder
-          message-text: "%luckperms_prefix%"
-          hover-text: "&7&m        &7[ &fRANK &7]&m        \n&3VIP Player"
-          click-event-action: "OPEN_URL"
-          click-event-value: "https://store.southhollow.net/"
+          message-text: '%luckperms_prefix% '
         - ==: BukkitMsgBuilder
-          message-text: "&f[playerName]"
-          hover-text: "&7&m        &7[ &fABOUT &7]&m        \n&3Username: &b[playerName]"
-          click-event-action: "SUGGEST_COMMAND"
-          click-event-value: "/msg [playerName] "
+          message-text: '&e[playerName]'
+          hover-text: "&8&m        &8[ &d&lABOUT &8]&m        \n&7Username: &d[playerName]\n&7Time Played: &d%statistic_time_played:days%d %statistic_time_played:hours%h %statistic_time_played:minutes%m\n\n&d➜&7 Click To Message"
+          click-event-action: SUGGEST_COMMAND
+          click-event-value: '/msg [playerName] '
         - ==: BukkitMsgBuilder
-          message-text: " &8&lᐅ "
+          message-text: ' &8&lᐅ '
     - ==: MessageFormat
       id: staff
       priority: 100
       permission: group.staff
-      color: "aqua"
+      color: aqua
       components:
         - ==: BukkitMsgBuilder
-          message-text: "%luckperms_prefix%"
-          hover-text: "&7&m        &7[ &fRANK &7]&m        \n&3Staff Member"
-          click-event-action: "OPEN_URL"
-          click-event-value: "https://southhollow.net/staff/"
+          message-text: '%luckperms_prefix% '
         - ==: BukkitMsgBuilder
-          message-text: "&3[playerName]"
-          hover-text: "&7&m        &7[ &fABOUT &7]&m        \n&3Username: &b[playerName]"
-          click-event-action: "SUGGEST_COMMAND"
-          click-event-value: "/msg [playerName] "
+          message-text: '&e[playerName]'
+          hover-text: "&8&m        &8[ &d&lABOUT &8]&m        \n&7Username: &d[playerName]\n&7Time Played: &d%statistic_time_played:days%d %statistic_time_played:hours%h %statistic_time_played:minutes%m\n\n&d➜&7 Click To Message"
+          click-event-action: SUGGEST_COMMAND
+          click-event-value: '/msg [playerName] '
         - ==: BukkitMsgBuilder
-          message-text: " &8&lᐅ "
+          message-text: ' &8&lᐅ '

@@ -42,11 +42,12 @@ public final class CleverText extends JavaPlugin {
 
 
     public void resetManagers() {
+        mainConfig.reload();
         this.textProcessorManager = new TextProcessorManager(this);
-        List<TextProcessor> textProcessors = (List<TextProcessor>) getConfig().getList("features.text-processors");
+        List<TextProcessor> textProcessors = (List<TextProcessor>) getMainConfig().get().getList("features.text-processors");
         textProcessors.forEach(textProcessor -> textProcessorManager.register(textProcessor));
         this.messageFormatManager = new MessageFormatManager(this);
-        List<MessageFormat> messageFormats = (List<MessageFormat>) getConfig().getList("features.message-formats");
+        List<MessageFormat> messageFormats = (List<MessageFormat>) getMainConfig().get().getList("features.message-formats");
         messageFormats.forEach(messageFormat -> messageFormatManager.register(messageFormat));
         bukkitFeatureManager.reload();
     }
