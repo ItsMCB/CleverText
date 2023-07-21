@@ -39,7 +39,6 @@ features:
         - "clit"
         - "clitoris"
         - "condom"
-        - "cum"
         - "coom"
         - "cunt"
         - "pussy"
@@ -54,22 +53,21 @@ features:
         - "sissy"
         - "penis"
         - "prostitute"
-        - "pubic"
         - "queef"
         - "rectum"
         - "scrotum"
         - "semen"
         - "piss"
         - "dick"
+        - "ass"
         - "whore"
         - "crap"
         - "shit"
         - "cunt"
-        - "arse"
         - "vibrator"
         - "urinate"
         - "tramp"
-        - "titty"
+        - "coochie"
       modify-mode: REPLACE
       replacement: '#'
       logging:
@@ -80,7 +78,6 @@ features:
       scan-mode: REGEX-WITH-ENTRIES
       entries:
         - "minger"
-        - "wanker"
         - "bell end"
         - "quim"
         - "shite"
@@ -90,7 +87,6 @@ features:
         - "fanny"
         - "slag"
         - "bollocks"
-        - "arse"
         - "bastard"
         - "bugger"
         - "knob head"
@@ -100,18 +96,25 @@ features:
         enabled: true
     - ==: TextProcessor
       id: If Inappropriate Entry Or Has Common Ending
-      scan-regex-pattern: (?i)\b[ENTRY]($|ing|ed|er|est|able|s)\b
+      scan-regex-pattern: (?i)\b[ENTRY]($|ing|ed|er|est|able|ies|ty|s|y)\b
       scan-mode: REGEX-WITH-ENTRIES
       entries:
+        - "arse"
         - "tit"
+        - "slut"
         - "bra"
-        - "ass"
         - "nig"
         - "nigg"
+        - "nibba"
         - "shag"
         - "fap"
+        - "fapp"
         - "cock"
         - "fuk"
+        - "cum"
+        - "cuck"
+        - "rape"
+        - "wank"
       modify-mode: REPLACE
       replacement: '#'
       logging:
@@ -179,7 +182,8 @@ features:
         - "fetish"
         - "hitler"
         - "hooker"
-        - "masturbat"
+        - "masturbate"
+        - "impregnate"
       modify-mode: BLOCK-SEND
       logging:
         enabled: true

@@ -51,6 +51,10 @@ public class MessageFormatManager {
 
     public void sendAs(Player player, String messageText) {
         TextComponent tcnormal = instance.getTextProcessorManager().process(player, messageText, false);
+        // Is null if completely blocked
+        if (tcnormal == null) {
+            return;
+        }
         //TextComponent tcstaff = instance.getTextProcessorManager().process(player, messageText, true);
         MessageFormat messageFormat = getBestFormat(player);
 

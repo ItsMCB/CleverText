@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 public class TextProcessorManager {
     
@@ -67,7 +67,6 @@ public class TextProcessorManager {
         ArrayList<PatternCatch> catches = generatePatternCatches(text);
 
         // Debug
-        System.out.println("Original: " + text);
         catches.forEach(patternCatch -> {
             System.out.println("===== "+patternCatch.getTextProcessorId() + " - " + text.substring(patternCatch.getResult().start(), patternCatch.getResult().end()) + " =====");
             System.out.println("Start " + patternCatch.getResult().start());
@@ -81,22 +80,22 @@ public class TextProcessorManager {
         // No idea how to go about addressing that
         ArrayList<IdentifiedTextFragment> textFragments = new ArrayList<>();
         AtomicInteger lastIndex = new AtomicInteger(0);
-        Stream<PatternCatch> patternCatchStream = catches.stream().sorted(Comparator.comparing(c -> c.getResult().end()));
-        patternCatchStream.forEach(patternCatch -> {
+        List<PatternCatch> catchList = catches.stream().sorted(Comparator.comparing(c -> c.getResult().end())).toList();
+        catchList.forEach(patternCatch -> {
             int start = patternCatch.getResult().start();
             int end = patternCatch.getResult().end();
             if (lastIndex.get() <= start) {
                 // Append what's before it.
                 String newTextA = text.substring(lastIndex.get(), start);
                 textFragments.add(new IdentifiedTextFragment(null, null, newTextA));
+
+                // Append the catch
+                TextProcessor tp = getById(patternCatch.getTextProcessorId());
+                String newText = text.substring(start, end);
+                textFragments.add(new IdentifiedTextFragment(tp, patternCatch, newText));
             } else {
                 System.out.println("Warning: Regex picked up similar catches (ex. \"https://test.com\" and \"test\") but can't manipulate both correctly. To fix this, ensure regex does not overlap with each other. Found: " + text.substring(start,end));
             }
-            // Append the catch
-            TextProcessor tp = getById(patternCatch.getTextProcessorId());
-            String newText = text.substring(lastIndex.get(), end);
-            textFragments.add(new IdentifiedTextFragment(tp, patternCatch, newText));
-
             lastIndex.set(end);
         });
         // Append the rest of the message
@@ -173,6 +172,7 @@ public class TextProcessorManager {
             // TODO alert staff
             // Alert sender TODO make message customizable in TextProcessor config obj
             new BukkitMsgBuilder("&cReally? Message blocked.").send(sender);
+            return null;
         }
         return Component.text().append(components).build();
     }
