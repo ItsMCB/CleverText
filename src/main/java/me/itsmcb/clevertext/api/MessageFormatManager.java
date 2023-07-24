@@ -50,36 +50,34 @@ public class MessageFormatManager {
     }
 
     public void sendAs(Player player, String messageText) {
-        TextComponent tcnormal = instance.getTextProcessorManager().process(player, messageText, false);
-        // Is null if completely blocked
-        if (tcnormal == null) {
-            return;
-        }
-        //TextComponent tcstaff = instance.getTextProcessorManager().process(player, messageText, true);
+        ProcessedTextResult result = instance.getTextProcessorManager().processChat(player,messageText);
         MessageFormat messageFormat = getBestFormat(player);
-
-        TextComponent.Builder builder = Component.text();
+        TextComponent.Builder format = Component.text();
 
         messageFormat.getComponents().forEach(component -> {
-            BukkitMsgBuilder bukkitMsgBuilder = new BukkitMsgBuilder("");
+            BukkitMsgBuilder formattedMessage = new BukkitMsgBuilder("");
             if (component.getMessageText() != null) {
-                bukkitMsgBuilder.text(PlaceholderAPI.setPlaceholders(player, processInternalPlaceholders(component.getMessageText(), player)));
+                formattedMessage.text(PlaceholderAPI.setPlaceholders(player, processInternalPlaceholders(component.getMessageText(), player)));
             }
             if (component.getHoverText() != null) {
-                bukkitMsgBuilder.hover(PlaceholderAPI.setPlaceholders(player, processInternalPlaceholders(component.getHoverText(), player)));
+                formattedMessage.hover(PlaceholderAPI.setPlaceholders(player, processInternalPlaceholders(component.getHoverText(), player)));
             }
             if ((component.getClickEventAction() != null) && (component.getClickEventValue() != null)) {
-                bukkitMsgBuilder.clickEvent(component.getClickEventAction(), PlaceholderAPI.setPlaceholders(player, processInternalPlaceholders(component.getClickEventValue(), player)));
+                formattedMessage.clickEvent(component.getClickEventAction(), PlaceholderAPI.setPlaceholders(player, processInternalPlaceholders(component.getClickEventValue(), player)));
             }
-            builder.append(bukkitMsgBuilder.build().get());
+            format.append(formattedMessage.build().get());
         });
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
-            // Don't hard code
-            if (onlinePlayer.hasPermission("group.owner")) {
-                // TODO fix w/ staff version
-                onlinePlayer.sendMessage(builder.build().append(tcnormal));
+            TextComponent regular = format.build().append(result.getRegularComponent());
+            TextComponent staff = format.build().append(result.getStaffComponent());
+            // Don't hard code perm
+            if (onlinePlayer.hasPermission("group.staff")) {
+                onlinePlayer.sendMessage(staff);
             } else {
-                onlinePlayer.sendMessage(builder.build().append(tcnormal));
+                if (result.isBlocked()) {
+                    return;
+                }
+                onlinePlayer.sendMessage(regular);
             }
         });
     }
