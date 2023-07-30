@@ -7,17 +7,6 @@ import java.util.ArrayList;
 
 public class ProcessedTextResult {
 
-    public enum processTarget {
-        CHAT,
-        SIGN,
-        ITEM,
-    }
-
-    /*
-    Is message blocked?
-    Staff version with catch "insight" versus normal player pov "this is blocked btw"
-     */
-
     private boolean blocked;
     private TextComponent regularComponent;
     private TextComponent staffComponent;

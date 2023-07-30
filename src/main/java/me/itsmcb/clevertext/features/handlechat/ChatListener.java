@@ -4,9 +4,13 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import me.itsmcb.clevertext.CleverText;
 import me.itsmcb.vexelcore.bukkit.api.utils.ChatUtils;
 import net.kyori.adventure.text.TextComponent;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ChatListener implements Listener {
 

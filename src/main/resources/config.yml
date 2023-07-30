@@ -56,11 +56,9 @@ features:
         - "queef"
         - "rectum"
         - "scrotum"
-        - "semen"
         - "piss"
         - "dick"
         - "whore"
-        - "crap"
         - "shit"
         - "cunt"
         - "vibrator"
@@ -95,7 +93,7 @@ features:
         enabled: true
     - ==: TextProcessor
       id: If Inappropriate Entry Or Has Common Ending
-      scan-regex-pattern: (?i)\b[ENTRY]($|ing|ed|er|est|able|ies|ty|s|y)\b
+      scan-regex-pattern: (?i)\b[ENTRY]($|ing|ed|er|est|able|ies|ty|s|y|)\b
       scan-mode: REGEX-WITH-ENTRIES
       entries:
         - "arse"
@@ -104,6 +102,8 @@ features:
         - "bra"
         - "nig"
         - "nigg"
+        - "nigga"
+        - "nigger"
         - "nibba"
         - "shag"
         - "fap"
@@ -113,8 +113,14 @@ features:
         - "cum"
         - "cuck"
         - "rape"
+        - "raper"
+        - "rapist"
         - "wank"
         - "ass"
+        - "asshole"
+        - "semen"
+        - "tiddy"
+        - "crap"
       modify-mode: REPLACE
       replacement: '#'
       logging:
@@ -146,8 +152,6 @@ features:
         - "up skirt"
         - "ball sack"
         - "beat meat"
-        - "ass wipe"
-        - "ass hole"
         - "dumb fuck"
         - "jerk off"
         - "mother fucker"
@@ -184,6 +188,7 @@ features:
         - "hooker"
         - "masturbate"
         - "impregnate"
+        - "orgasm"
       modify-mode: BLOCK-SEND
       logging:
         enabled: true
