@@ -121,6 +121,7 @@ features:
         - "semen"
         - "tiddy"
         - "crap"
+        - "sex"
       modify-mode: REPLACE
       replacement: '#'
       logging:
@@ -139,7 +140,7 @@ features:
         - "minefort"
         - "apexmc"
         - "mcprohosting"
-      modify-mode: BLOCK-SEND
+      modify-mode: REPLACE
       logging:
         enabled: true
     - ==: TextProcessor
@@ -164,7 +165,7 @@ features:
         - "cock block"
         - "deep throat"
         - "breast milk"
-      modify-mode: BLOCK-SEND
+      modify-mode: REPLACE
       logging:
         enabled: true
     - ==: TextProcessor
@@ -175,7 +176,6 @@ features:
         - "osama bin laden"
         - "gonorrhea"
         - "xxx"
-        - "sex"
         - "bestiality"
         - "playboy"
         - "pornography"
@@ -189,7 +189,7 @@ features:
         - "masturbate"
         - "impregnate"
         - "orgasm"
-      modify-mode: BLOCK-SEND
+      modify-mode: REPLACE
       logging:
         enabled: true
     - ==: TextProcessor
