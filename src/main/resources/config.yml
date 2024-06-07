@@ -12,7 +12,7 @@
 #     GitHub: https://github.com/ItsMCB/CleverText
 
 # CleverText gives you full control over its features. Please read the comments (lines with # before them) to understand what each feature does and how to customize it.
-file-version: 1 # DO NOT EDIT THIS
+file-version: 2 # DO NOT EDIT THIS
 features:
   # /clearchat is a command that will sendAs empty messages to clients in an effort to remove visibility of previously visibly messages
   clearchat:
@@ -86,6 +86,20 @@ features:
         - "bastard"
         - "bugger"
         - "knob head"
+      modify-mode: REPLACE
+      replacement: '#'
+      logging:
+        enabled: true
+    - ==: TextProcessor
+      id: Offensive Spanish If Inappropriate Entry Is In Word
+      scan-regex-pattern: (?i)\b(\w*)[ENTRY](\w*)\b
+      scan-mode: REGEX-WITH-ENTRIES
+      entries:
+        - "mierda" # shit
+        - "zorra" # bitch
+        - "vete al infierno" # go to hell
+        - "vete al demonio" # go to hell
+        - "verga" # cock
       modify-mode: REPLACE
       replacement: '#'
       logging:
