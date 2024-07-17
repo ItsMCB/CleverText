@@ -59,7 +59,7 @@ public final class CleverText extends JavaPlugin {
         // TODO maybe extend filtering to have replacement component customization options like the chat formats will have
 
         // Manage config
-        mainConfig = new BoostedConfig(getDataFolder(),"config", getResource("config.yml"), new SpigotSerializer());
+        mainConfig = new BoostedConfig(getDataFolder(),"config", getResource("config.yml"), SpigotSerializer.getInstance());
 
         // Register custom config serialization
         ConfigurationSerialization.registerClass(TextProcessor.class, "TextProcessor");
