@@ -1,0 +1,37 @@
+name: CleverText
+version: '${version}'
+description: Aims to enhance the text experience with permission-based chat formatting, multi-surface text filtering, URL whitelisting, and moderation events.
+main: me.itsmcb.clevertext.CleverText
+api-version: '26.3'
+
+authors: [ ItsMCB ]
+website: https://github.com/ItsMCB/CleverText
+
+dependencies:
+  server:
+    VexelCore:
+      required: true
+      load: BEFORE
+      join-classpath: true
+
+    PlaceholderAPI:
+      required: false
+      load: OMIT
+      join-classpath: true
+
+permissions:
+  clevertext.admin:
+    description: Grants full access to all CleverText administrative commands and debugging tools.
+    default: op
+    children:
+      clevertext.clearchat: true
+      clevertext.staff: true
+  clevertext.clearchat:
+    description: Allows clearing chat via /clearchat and /clevertext clearchat.
+    default: op
+  clevertext.staff:
+    description: Allows viewing detailed filter catch hover tooltips and blocked/caught alerts across surfaces.
+    default: op
+  clevertext.bypass:
+    description: Allows bypassing CleverText text and URL moderation filters.
+    default: false

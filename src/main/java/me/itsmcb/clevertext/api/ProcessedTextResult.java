@@ -1,43 +1,79 @@
 package me.itsmcb.clevertext.api;
 
+import me.itsmcb.clevertext.api.event.FilterCatch;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ProcessedTextResult {
 
-    private boolean blocked;
-    private TextComponent regularComponent;
-    private TextComponent staffComponent;
+    private final @NotNull String originalText;
+    private final @NotNull String plainCensored;
+    private final @NotNull TextComponent regularComponent;
+    private final @NotNull TextComponent staffComponent;
+    private final @NotNull List<FilterCatch> catches;
+    private final boolean blocked;
+    private final boolean censored;
+    private final boolean modified;
+    private final boolean eventCancelled;
 
-    public ProcessedTextResult() {
-    }
-
-    public ProcessedTextResult setBlocked(boolean blocked) {
+    public ProcessedTextResult(
+            @NotNull String originalText,
+            @NotNull String plainCensored,
+            @NotNull List<Component> regularComponents,
+            @NotNull List<Component> staffComponents,
+            @NotNull List<FilterCatch> catches,
+            boolean blocked,
+            boolean censored,
+            boolean modified,
+            boolean eventCancelled
+    ) {
+        this.originalText = originalText;
+        this.plainCensored = plainCensored;
+        this.regularComponent = Component.text().append(regularComponents).build();
+        this.staffComponent = Component.text().append(staffComponents).build();
+        this.catches = List.copyOf(catches);
         this.blocked = blocked;
-        return this;
+        this.censored = censored;
+        this.modified = modified;
+        this.eventCancelled = eventCancelled;
     }
 
-    public ProcessedTextResult setRegularComponent(ArrayList<Component> components) {
-        this.regularComponent = Component.text().append(components).build();
-        return this;
+    public @NotNull String getOriginalText() {
+        return originalText;
     }
 
-    public ProcessedTextResult setStaffComponent(ArrayList<Component> components) {
-        this.staffComponent = Component.text().append(components).build();
-        return this;
+    public @NotNull String getPlainCensored() {
+        return plainCensored;
     }
 
-    public TextComponent getRegularComponent() {
+    public @NotNull TextComponent getRegularComponent() {
         return regularComponent;
     }
 
-    public TextComponent getStaffComponent() {
+    public @NotNull TextComponent getStaffComponent() {
         return staffComponent;
+    }
+
+    public @NotNull List<FilterCatch> getCatches() {
+        return catches;
     }
 
     public boolean isBlocked() {
         return blocked;
+    }
+
+    public boolean isCensored() {
+        return censored;
+    }
+
+    public boolean isModified() {
+        return modified;
+    }
+
+    public boolean isEventCancelled() {
+        return eventCancelled;
     }
 }

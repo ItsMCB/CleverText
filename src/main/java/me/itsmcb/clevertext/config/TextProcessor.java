@@ -1,178 +1,230 @@
 package me.itsmcb.clevertext.config;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.SerializableAs;
+import libs.dev.dejvokep.boostedyaml.block.implementation.Section;
+import me.itsmcb.clevertext.api.event.FilterAction;
+import me.itsmcb.clevertext.api.event.TextSurface;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
-@SerializableAs("TextProcessor")
-public class TextProcessor implements ConfigurationSerializable {
+public class TextProcessor {
 
-    public enum ScanMode {
-        REGEX("REGEX"),
-        REGEXWITHENTRIES("REGEX-WITH-ENTRIES");
-
-        private String scanMode;
-
-        ScanMode(String scanMode) {
-            this.scanMode = scanMode;
-        }
-
-        public String get() {
-            return scanMode;
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(get());
-        }
+    public enum MatchType {
+        WORD_CONTAINS,
+        WORD_WITH_ENDINGS,
+        WORD_EXACT,
+        PHRASE,
+        REGEX
     }
 
-    public enum ModifyMode {
-        REPLACE("REPLACE"),
-        BLOCKSEND("BLOCK-SEND"),
-        MAKEHYPERLINK("MAKE-HYPERLINK");
+    private final @NotNull String id;
+    private final boolean enabled;
+    private final @NotNull MatchType matchType;
+    private final @NotNull FilterAction action;
+    private final @NotNull String replacement;
+    private final boolean logCatches;
+    private final boolean fireEvent;
+    private final @NotNull Set<TextSurface> surfaces;
+    private final @Nullable String rawPattern;
+    private final @NotNull List<String> entries;
+    private final @Nullable Pattern compiledPattern;
 
-        private String modifyMode;
-
-        ModifyMode(String scanMode) {
-            this.modifyMode = scanMode;
-        }
-
-        public String get() {
-            return modifyMode;
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(get());
-        }
-    }
-
-    private String id;
-    private String scanRegexPattern;
-    private ScanMode scanMode;
-    private ArrayList<String> entries;
-    private ModifyMode modifyMode;
-    private String replaceModeReplacement;
-    private boolean logCatches;
-
-    public TextProcessor(String id, String scanRegexPattern, ScanMode scanMode, ArrayList<String> entries, ModifyMode modifyMode, String replaceModeReplacement, boolean logCatches) {
+    public TextProcessor(
+            @NotNull String id,
+            boolean enabled,
+            @NotNull MatchType matchType,
+            @NotNull FilterAction action,
+            @Nullable String replacement,
+            boolean logCatches,
+            boolean fireEvent,
+            @NotNull Set<TextSurface> surfaces,
+            @Nullable String rawPattern,
+            @NotNull List<String> entries,
+            @Nullable Logger logger
+    ) {
         this.id = id;
-        this.scanRegexPattern = scanRegexPattern;
-        this.scanMode = scanMode;
-        this.entries = entries;
-        this.modifyMode = modifyMode;
-        this.replaceModeReplacement = replaceModeReplacement;
+        this.enabled = enabled;
+        this.matchType = matchType;
+        this.action = action == FilterAction.BLOCK ? FilterAction.BLOCK : FilterAction.REPLACE;
+        this.replacement = (replacement != null && !replacement.isEmpty()) ? replacement : "#";
         this.logCatches = logCatches;
+        this.fireEvent = fireEvent;
+        this.surfaces = surfaces.isEmpty() ? EnumSet.noneOf(TextSurface.class) : EnumSet.copyOf(surfaces);
+        this.rawPattern = rawPattern;
+        this.entries = List.copyOf(entries);
+        this.compiledPattern = enabled ? compilePattern(logger) : null;
     }
 
-    public String getId() {
+    public @NotNull String getId() {
         return id;
     }
 
-    public String getScanRegexPattern() {
-        return scanRegexPattern;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public ScanMode getScanMode() {
-        return scanMode;
+    public @NotNull MatchType getMatchType() {
+        return matchType;
     }
 
-    public ArrayList<String> getEntries() {
-        return entries;
+    public @NotNull FilterAction getAction() {
+        return action;
     }
 
-    public ModifyMode getModifyMode() {
-        return modifyMode;
-    }
-
-    public String getReplaceModeReplacement() {
-        return replaceModeReplacement;
+    public @NotNull String getReplacement() {
+        return replacement;
     }
 
     public boolean shouldLogCatches() {
         return logCatches;
     }
 
-    @Override
-    public @NotNull Map<String, Object> serialize() {
-        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        map.put("id", id);
-        map.put("scan-regex-pattern", scanRegexPattern);
-        map.put("scan-mode", scanMode.get());
-        if (scanMode.equals(ScanMode.REGEXWITHENTRIES)) {
-            map.put("entries", entries);
-        }
-        map.put("modify-mode", modifyMode.get());
-        if (modifyMode.equals(ModifyMode.REPLACE)) {
-            map.put("replacement", replaceModeReplacement);
-        }
-        Map<String, Object> logging = new HashMap<>();
-        logging.put("enabled", logCatches);
-        map.put("logging", logging);
-        return map;
+    public boolean shouldFireEvent() {
+        return fireEvent;
     }
 
-    public static TextProcessor deserialize(Map<String, Object> map) {
+    public @NotNull Set<TextSurface> getSurfaces() {
+        return surfaces;
+    }
+
+    public boolean appliesTo(@NotNull TextSurface surface) {
+        return surfaces.isEmpty() || surfaces.contains(surface);
+    }
+
+    public @Nullable String getRawPattern() {
+        return rawPattern;
+    }
+
+    public @NotNull List<String> getEntries() {
+        return entries;
+    }
+
+    public @Nullable Pattern getCompiledPattern() {
+        return compiledPattern;
+    }
+
+    public @NotNull String getPatternDescription() {
+        if (matchType == MatchType.REGEX) {
+            return rawPattern != null ? rawPattern : "";
+        }
+        return matchType.name() + " (" + entries.size() + " entries)";
+    }
+
+    private @Nullable Pattern compilePattern(@Nullable Logger logger) {
+        String regex;
+        if (matchType == MatchType.REGEX) {
+            if (rawPattern == null || rawPattern.isBlank()) {
+                return null;
+            }
+            regex = rawPattern;
+        } else {
+            if (entries.isEmpty()) {
+                return null;
+            }
+            // Quote literal words/phrases, deduplicate, and sort longest-first
+            String alternation = entries.stream()
+                    .filter(Objects::nonNull)
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .distinct()
+                    .sorted(Comparator.comparingInt(String::length).reversed())
+                    .map(Pattern::quote)
+                    .collect(Collectors.joining("|"));
+            if (alternation.isEmpty()) {
+                return null;
+            }
+            regex = switch (matchType) {
+                case WORD_CONTAINS -> "(?i)\\b\\w*(?:" + alternation + ")\\w*\\b";
+                case WORD_WITH_ENDINGS -> "(?i)\\b(?:" + alternation + ")(?:ing|ed|er|est|able|ies|ty|es|s|y)?\\b";
+                case WORD_EXACT -> "(?i)\\b(?:" + alternation + ")\\b";
+                case PHRASE -> "(?i)(?<!\\w)(?:" + alternation + ")(?!\\w)";
+                case REGEX -> rawPattern;
+            };
+        }
+
+        try {
+            return Pattern.compile(regex);
+        } catch (PatternSyntaxException e) {
+            if (logger != null) {
+                logger.warning("Invalid regex in TextProcessor '" + id + "': " + e.getMessage());
+            }
+            return null;
+        }
+    }
+
+    public static @NotNull TextProcessor fromSection(@NotNull String id, @NotNull Section section, @Nullable Logger logger) {
+        boolean enabled = section.getBoolean("enabled", true);
+        MatchType matchType = parseMatchType(section.getString("match-type"));
+        FilterAction action = parseAction(section.getString("action"));
+        String replacement = section.getString("replacement", "#");
+        boolean logging = section.getBoolean("logging", true);
+        boolean fireEvent = section.getBoolean("fire-event", true);
+        String pattern = section.getString("pattern");
+        List<String> entries = section.getStringList("entries");
+
+        Set<TextSurface> surfaces = EnumSet.noneOf(TextSurface.class);
+        List<String> rawSurfaces = section.getStringList("surfaces");
+        if (rawSurfaces != null) {
+            for (String s : rawSurfaces) {
+                if (s == null || s.isBlank()) {
+                    continue;
+                }
+                try {
+                    surfaces.add(TextSurface.valueOf(s.trim().toUpperCase(Locale.ROOT)));
+                } catch (IllegalArgumentException ignored) {
+                    if (logger != null) {
+                        logger.warning("Unknown surface '" + s + "' in TextProcessor '" + id + "'");
+                    }
+                }
+            }
+        }
+
         return new TextProcessor(
-                (String) map.get("id"),
-                (String) map.get("scan-regex-pattern"),
-                getScanModeByName((String) map.get("scan-mode")),
-                findEntriesOrNull(map),
-                getModifyModeByName((String) map.get("modify-mode")),
-                findReplacementOrNull(map),
-                shouldLog(map)
+                id,
+                enabled,
+                matchType,
+                action,
+                replacement,
+                logging,
+                fireEvent,
+                surfaces,
+                pattern,
+                entries != null ? entries : List.of(),
+                logger
         );
     }
 
-    public static ScanMode getScanModeByName(String s) {
-        return Stream.of(ScanMode.values()).filter(sm -> sm.get().equals(s)).findFirst().orElse(null);
-    }
-
-    public static ModifyMode getModifyModeByName(String s) {
-        return Stream.of(ModifyMode.values()).filter(mm -> mm.get().equals(s)).findFirst().orElse(null);
-    }
-
-    public static ArrayList<String> findEntriesOrNull(Map<String, Object> map) {
-        if (map.containsKey("entries")) {
-            return (ArrayList<String>) map.get("entries");
+    private static @NotNull MatchType parseMatchType(@Nullable String value) {
+        if (value == null || value.isBlank()) {
+            return MatchType.WORD_CONTAINS;
         }
-        return null;
+        return switch (value.trim().toUpperCase(Locale.ROOT)) {
+            case "WORD_WITH_ENDINGS" -> MatchType.WORD_WITH_ENDINGS;
+            case "WORD_EXACT" -> MatchType.WORD_EXACT;
+            case "PHRASE" -> MatchType.PHRASE;
+            case "REGEX" -> MatchType.REGEX;
+            default -> MatchType.WORD_CONTAINS;
+        };
     }
 
-    public static String findReplacementOrNull(Map<String, Object> map) {
-        if (map.containsKey("replacement")) {
-            return (String) map.get("replacement");
+    private static @NotNull FilterAction parseAction(@Nullable String value) {
+        if (value == null || value.isBlank()) {
+            return FilterAction.REPLACE;
         }
-        return null;
-    }
-
-    public static boolean shouldLog(Map<String, Object> map) {
-        if (map.containsKey("logging")) {
-            Map<String, Object> map2 = (Map<String, Object>) map.get("logging");
-            if (map2.containsKey("enabled")) {
-                return (boolean) map2.get("enabled");
-            }
-        }
-        return false;
-    }
-
-    public ArrayList<Pattern> getPatterns() {
-        ArrayList<Pattern> patterns = new ArrayList<>();
-        if (scanMode.equals(ScanMode.REGEXWITHENTRIES)) {
-            for (String entry : entries) {
-                patterns.add(Pattern.compile(scanRegexPattern.replace("[ENTRY]", entry)));
-            }
-        } else {
-            patterns.add(Pattern.compile(scanRegexPattern));
-        }
-        return patterns;
+        return switch (value.trim().toUpperCase(Locale.ROOT)) {
+            case "BLOCK", "BLOCK-SEND" -> FilterAction.BLOCK;
+            default -> FilterAction.REPLACE;
+        };
     }
 }

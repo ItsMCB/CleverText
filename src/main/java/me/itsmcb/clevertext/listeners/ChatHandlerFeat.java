@@ -1,4 +1,4 @@
-package me.itsmcb.clevertext.features.handlechat;
+package me.itsmcb.clevertext.listeners;
 
 import me.itsmcb.clevertext.CleverText;
 import me.itsmcb.vexelcore.bukkit.BukkitFeature;
