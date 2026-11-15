@@ -301,7 +301,7 @@ features:
       permission: null
       message-color: "white"
       parts:
-        - text: "&e[playerName]"
+        - text: "&e%drusk_nickname_or_playername%"
           hover: "&8&m        &8[ &d&lABOUT &8]&m        \n&7Username: &d[playerName]\n&7Time Played: &d%statistic_time_played:days%d %statistic_time_played:hours%h %statistic_time_played:minutes%m\n\n&d➜&7 Click To Message"
           click:
             action: SUGGEST_COMMAND
@@ -314,7 +314,7 @@ features:
       message-color: "green"
       parts:
         - text: "%luckperms_prefix% "
-        - text: "&e[playerName]"
+        - text: "&e%drusk_nickname_or_playername%"
           hover: "&8&m        &8[ &d&lABOUT &8]&m        \n&7Username: &d[playerName]\n&7Time Played: &d%statistic_time_played:days%d %statistic_time_played:hours%h %statistic_time_played:minutes%m\n\n&d➜&7 Click To Message"
           click:
             action: SUGGEST_COMMAND
@@ -327,7 +327,7 @@ features:
       message-color: "aqua"
       parts:
         - text: "%luckperms_prefix% "
-        - text: "&e[playerName]"
+        - text: "&e%drusk_nickname_or_playername%"
           hover: "&8&m        &8[ &d&lABOUT &8]&m        \n&7Username: &d[playerName]\n&7Time Played: &d%statistic_time_played:days%d %statistic_time_played:hours%h %statistic_time_played:minutes%m\n\n&d➜&7 Click To Message"
           click:
             action: SUGGEST_COMMAND
