@@ -23,7 +23,7 @@ dependencies {
     // Updated Paper versioning (Year.Drop.Patch format)
     compileOnly 'io.papermc.paper:paper-api:26.3.build.+'
     compileOnly 'me.clip:placeholderapi:2.12.3'
-    compileOnly files('/home/martin/Repos/VexelCore/bukkit/build/libs/VexelCore-Bukkit-1.0.1-SNAPSHOT.jar')
+    compileOnly files('/home/martin/Repos/VexelCore/bukkit/build/libs/VexelCore-Bukkit-2.0.1-SNAPSHOT.jar')
 }
 
 java {
